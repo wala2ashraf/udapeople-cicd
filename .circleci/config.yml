@@ -1,5 +1,6 @@
 version: 2.1
 
+
 # commands:
 #   install_awscli:
 #     description: Install Aws Cli v2
@@ -188,7 +189,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-            
+             
       - destroy-environment     
 
 #   configure-infrastructure:
