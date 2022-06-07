@@ -1,6 +1,5 @@
 version: 2.1
 
-
 # commands:
 #   install_awscli:
 #     description: Install Aws Cli v2
@@ -20,12 +19,11 @@ version: 2.1
 #                    sudo apt install software-properties-common
 #                    sudo add-apt-repository --yes --update ppa:ansible/ansible
 #                    sudo apt install ansible
-
-  destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+destroy-environment:
+  description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
       Workflow_ID:
-        type: string 
+        type: string  
         default: ${CIRCLE_WORKFLOW_ID:0:7}
     steps:
       - run:
@@ -190,7 +188,7 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
              
-      - destroy-environment     
+      - destroy-environment    
 
 #   configure-infrastructure:
 #     docker:
