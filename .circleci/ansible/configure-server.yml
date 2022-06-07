@@ -27,5 +27,5 @@
 
 
   roles:
-    - configuer-server
+    - configure-server
     - configure-prometheus-node-ex
