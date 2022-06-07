@@ -31,6 +31,6 @@ Resources:
       KeyName: udacity 
 
       ImageId: ami-09d56f8956ab235b3
-      Tags:
+      Tags: 
         - Key: Name
           Value: !Sub backend-${ID}
