@@ -149,9 +149,10 @@ jobs:
   deploy-infrastructure:
     docker:
       - image: cimg/base:stable
-      - install_awscli
+      
     steps:
       - checkout
+      - install_awscli
       - run:
           name: Ensure back-end infrastructure exists
           command: |
