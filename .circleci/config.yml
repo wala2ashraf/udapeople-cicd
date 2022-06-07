@@ -184,7 +184,7 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
               --tags project=udapeople \
-              --stack-name "udapeople-frontkend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
               
       - run:
@@ -210,7 +210,7 @@ jobs:
       - image: python:3.8-alpine3.11
     steps:
       - checkout
-      - install_awscli
+      
       - add_ssh_keys:
           fingerprints: ["0d:e2:9b:5a:03:ab:49:9b:1a:6e:fa:75:d2:74:7a:d8"]
       - attach_workspace:
