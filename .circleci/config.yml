@@ -1,6 +1,6 @@
 version: 2.1
 
-# commands:
+commands:
 #   install_awscli:
 #     description: Install Aws Cli v2
 #     steps: 
@@ -10,15 +10,16 @@ version: 2.1
 #                    unzip awscliv2.zip
 #                    sudo ./aws/install 
 
-#   install_ansible:
-#     description: Install Ansible v2
-#     steps:
-#       - run:
-#           name: Install Ansible v2 
-#           command: sudo apt update
-#                    sudo apt install software-properties-common
-#                    sudo add-apt-repository --yes --update ppa:ansible/ansible
-#                    sudo apt install ansible
+  install_ansible:
+    description: Install Ansible v2
+    steps:
+      - run:
+          name: Install Ansible v2 
+          command: sudo apt update
+                   sudo apt install software-properties-common
+                   sudo add-apt-repository --yes --update ppa:ansible/ansible
+                   sudo apt install ansible
+
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -156,7 +157,7 @@ jobs:
     steps:
       - checkout
       - run: yum install -y tar gzip
-      #- install_awscli
+      
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -190,24 +191,26 @@ jobs:
              
       - destroy-environment    
 
-#   configure-infrastructure:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Configure server
-#           command: |
-#             # Your code here
-#             exit 1
-#       # Here's where you will add some code to rollback on failure      
+  configure-infrastructure:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - install_ansible
+      - add_ssh_keys:
+          fingerprints: ["0d:e2:9b:5a:03:ab:49:9b:1a:6e:fa:75:d2:74:7a:d8"]
+      - attach_workspace:
+          at: ~/
+    
+      - run:
+          name: Configure server
+          command: |
+            yum install -y tar gzip
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
+
+      - destroy-environment   
 
 #   run-migrations:
 #     docker:
@@ -340,8 +343,8 @@ workflows:
           filters:
             branches:
               only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
       # - run-migrations:
       #     requires: [configure-infrastructure]
       # - deploy-frontend:
