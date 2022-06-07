@@ -10,15 +10,15 @@ commands:
 #                    unzip awscliv2.zip
 #                    sudo ./aws/install 
 
-  install_ansible:
-    description: Install Ansible v2
-    steps:
-      - run:
-          name: Install Ansible v2 
-          command: sudo apt update
-                   sudo apt install software-properties-common
-                   sudo add-apt-repository --yes --update ppa:ansible/ansible
-                   sudo apt install ansible
+  # install_ansible:
+  #   description: Install Ansible v2
+  #   steps:
+  #     - run:
+  #         name: Install Ansible v2 
+  #         command: sudo apt update
+  #                  sudo apt install software-properties-common
+  #                  sudo add-apt-repository --yes --update ppa:ansible/ansible
+  #                  sudo apt install ansible
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -196,12 +196,12 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      
+      - run: yum install -y tar gzip
       - add_ssh_keys:
           fingerprints: ["0d:e2:9b:5a:03:ab:49:9b:1a:6e:fa:75:d2:74:7a:d8"]
       - attach_workspace:
           at: ~/
-    
+      
       - run:
           name: Configure server
           command: |
