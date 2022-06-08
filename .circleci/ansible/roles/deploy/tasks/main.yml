@@ -1,9 +1,6 @@
 ---
-- name: upgrade and  update packages
-  become: true
-  apt: 
-   update_cache: yes
-- name:  create backend directory
+
+- name:  "create backend directory"
   file:
     path: ~/backend
     state: directory
@@ -13,13 +10,17 @@
     src: artifact.tar.gz
     dest: ~/backend
 
-- name: "install node dependencies"
-  command: npm i 
-  args:
-    chdir: ~/backend
 
-- name: install ans start app
-  command:  pm2 start main.js
+- name: "Installing Node Dependencies"
+  shell: |
+    cd ~/backend-app
+    npm i
+    
+- name: "Executing Node app with PM2"
+  shell: |
+    cd ~/backend-app/dist
+    pm2 stop default
+    pm2 start main.js
   args:
     chdir: ~/backend/dist
   environment:
