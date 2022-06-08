@@ -291,10 +291,9 @@ jobs:
                     
   deploy-backend:
     docker:
-      - image: cimg/base:stable
+      - image: amazon/aws-cli
     steps:
       - checkout
-      - install_awscli 
       - install_ansible
       - install_nodejs
       - add_ssh_keys:
@@ -303,6 +302,7 @@ jobs:
           at: ~/
       - restore_cache:
           keys: [backend-deps]
+      - run: yum install -y tar gzip
       - run:
           name: Install dependencies
           command: |
@@ -312,11 +312,13 @@ jobs:
           name: Package Backend
           command: |
             cd backend
+            npm i
             npm run build
-            tar -czf artifact.tar.gz dist/* package*
-
             cd ..
-            cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
+
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            cp ./artifact.tar.gz  .circleci/ansible/roles/deploy/files
       - run:
           name: Deploy backend
           command: | 

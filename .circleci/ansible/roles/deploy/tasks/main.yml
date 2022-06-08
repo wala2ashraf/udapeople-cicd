@@ -1,22 +1,34 @@
----
-- name: "Creates backend app directory"
+- name: upgrade and  update packages
   become: true
+  apt: 
+   update_cache: yes
+- name:  create backend directory
   file:
-    path: ~/backend-app
+    path: ~/backend
     state: directory
-
-- name: "Unarchive backend files"
+     
+- name: "unarchive backend directory"
   unarchive:
     src: artifact.tar.gz
-    dest: ~/backend-app
+    dest: ~/backend
 
-- name: "Installing Node Dependencies"
-  shell: |
-    cd ~/backend-app
-    npm i
-- name: "Executing Node app with PM2"
-  shell: |
-    cd ~/backend-app/dist
-    pm2 stop default
-    pm2 start main.js
+- name: "install node dependencies"
+  command: npm i 
+  args:
+    chdir: ~/backend
 
+- name: install ans start app
+  command:  pm2 start main.js
+  args:
+    chdir: ~/backend/dist
+  environment:
+      ENVIRONMENT: production
+      TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION') }}"
+      TYPEORM_MIGRATIONS_DIR: "./migrations"
+      TYPEORM_MIGRATIONS: "./migrations/*.js"
+      TYPEORM_ENTITIES: "./modules/domain/**/*.entity.js"
+      TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST') }}"
+      TYPEORM_PORT: "{{ lookup('env', 'TYPEORM_PORT') }}"
+      TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME') }}"
+      TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD') }}"
+      TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
